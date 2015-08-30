@@ -1,0 +1,19 @@
+{
+    "name": "signpostmarv/php-ico",
+    "description": "PHP Favicon Generator based on php-ico by chrissbliss18",
+    "autoload": {
+        "psr-4": {
+            "SignpostMarv\\Ico\\": ""
+        }
+    },
+    "require": {
+        "intervention/image": "^2.3"
+    },
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "SignpostMarv",
+            "email": "me@signpostmarv.name"
+        }
+    ]
+}
