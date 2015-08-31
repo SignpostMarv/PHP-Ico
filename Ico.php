@@ -111,7 +111,7 @@ class Ico
   }
 
 
-  protected function getIcoData(){
+  public function getIcoData(){
     if(!is_array($this->images) || empty($this->images)){
       return false;
     }
