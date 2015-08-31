@@ -30,6 +30,9 @@ class Ico
     $im = ImageManagerStatic::make($file);
 
     foreach($sizes as $size){
+      if(is_integer($size)){
+        $size = array($size, $size);
+      }
       list($width, $height) = $size;
       $im->backup();
       $new_im = $im->resize($width, $height);
