@@ -5,6 +5,7 @@ namespace PHP_ICO\Tests;
 
 use BadMethodCallException;
 use Exception;
+use Intervention\Image\Exception\NotReadableException;
 use InvalidArgumentException;
 use PHP_ICO;
 use PHPUnit_Framework_TestCase;
@@ -21,44 +22,53 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.gif',
                 array(),
+                __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.gif.ico',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.jpg',
                 array(),
+                __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.jpg.ico',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.png',
                 array(),
+                __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.png.ico',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.gif',
                 array(16,16),
+                __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.gif.ico',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.jpg',
                 array(16, 16),
+                __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.jpg.ico',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.png',
                 array(16, 16),
+                __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.png.ico',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.gif',
                 array(
                     array(16,16),
                 ),
+                __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.gif.ico',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.jpg',
                 array(
                     array(16,16),
                 ),
+                __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.jpg.ico',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.png',
                 array(
                     array(16,16),
                 ),
+                __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.png.ico',
             ),
         );
     }
@@ -69,38 +79,38 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
             array(
                 null,
                 array(),
-                'InvalidArgumentException',
-                'File not specified!',
+                'Intervention\\Image\\Exception\\NotReadableException',
+                'Image source not readable',
             ),
             array(
                 false,
                 array(),
-                'InvalidArgumentException',
-                'File not specified!',
+                'Intervention\\Image\\Exception\\NotReadableException',
+                'Image source not readable',
             ),
             array(
                 true,
                 array(),
-                'InvalidArgumentException',
-                'File not specified!',
+                'Intervention\\Image\\Exception\\NotReadableException',
+                'Image source not readable',
             ),
             array(
                 1,
                 array(),
-                'InvalidArgumentException',
-                'File not specified!',
+                'Intervention\\Image\\Exception\\NotReadableException',
+                'Image source not readable',
             ),
             array(
                 '',
                 array(),
-                'InvalidArgumentException',
-                'File not specified!',
+                'Intervention\\Image\\Exception\\NotReadableException',
+                'Unable to init from given binary data.',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.xcf',
                 array(),
-                'InvalidArgumentException',
-                'Could not determine image size!',
+                'Intervention\\Image\\Exception\\NotReadableException',
+                'Unable to read image from file (' . __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.xcf).',
             ),
         );
     }
@@ -119,7 +129,7 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
     /**
     * @dataProvider goodAddImageSingleProvider
     */
-    public function testConstructorOnly($file, $sizes)
+    public function testConstructorOnly($file, $sizes, $expectedIco)
     {
         $this->assertTrue(is_file($file));
         $this->assertTrue(is_readable($file));
@@ -129,7 +139,7 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
         $ico = new PHP_ICO($file, $sizes);
         $outputToHere = tempnam(sys_get_temp_dir(), 'PHP_ICO_tests');
         $this->assertTrue($ico->save_ico($outputToHere));
-        $this->assertSame(sha1_file($file . '.ico'), sha1_file($outputToHere));
+        $this->assertSame(sha1_file($expectedIco), sha1_file($outputToHere));
         unlink($outputToHere);
     }
 
