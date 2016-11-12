@@ -69,37 +69,37 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
             array(
                 null,
                 array(),
-                InvalidArgumentException::class,
+                'InvalidArgumentException',
                 'File not specified!',
             ),
             array(
                 false,
                 array(),
-                InvalidArgumentException::class,
+                'InvalidArgumentException',
                 'File not specified!',
             ),
             array(
                 true,
                 array(),
-                InvalidArgumentException::class,
+                'InvalidArgumentException',
                 'File not specified!',
             ),
             array(
                 1,
                 array(),
-                InvalidArgumentException::class,
+                'InvalidArgumentException',
                 'File not specified!',
             ),
             array(
                 '',
                 array(),
-                InvalidArgumentException::class,
+                'InvalidArgumentException',
                 'File not specified!',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.xcf',
                 array(),
-                InvalidArgumentException::class,
+                'InvalidArgumentException',
                 'Could not determine image size!',
             ),
         );
@@ -110,7 +110,7 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
         return array(
             array(
                 array(),
-                BadMethodCallException::class,
+                'BadMethodCallException',
                 'Cannot call PHP_ICO::PHP_ICO::_get_ico_data() with no images!',
             ),
         );
@@ -139,9 +139,18 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
     public function testAddImageBadFiles($file, $sizes, $expectException, $expectExceptionMessage)
     {
         $ico = new PHP_ICO();
+        if (method_exists($this, 'expectException')) {
         $this->expectException($expectException);
         $this->expectExceptionMessage($expectExceptionMessage);
         $ico->add_image($file, $sizes);
+        } else {
+            try {
+
+            } catch (Exception $e) {
+                $this->assertSame(get_class($e), $expectException);
+                $this->assertSame($e->getMessage(), $expectExceptionMessage);
+            }
+        }
     }
 
     /**
@@ -155,15 +164,22 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
         }
         $outputToHere = tempnam(sys_get_temp_dir(), 'PHP_ICO_tests');
         $e = null;
+        if (method_exists($this, 'expectException')) {
         $this->expectException($expectException);
         $this->expectExceptionMessage($expectExceptionMessage);
+        }
         try {
             $ico->save_ico($outputToHere);
         } catch (Exception $e) {
         }
         unlink($outputToHere);
         if ($e instanceof Exception) {
+            if (!method_exists($this, 'expectException')) {
+                $this->assertSame(get_class($e), $expectException);
+                $this->assertSame($e->getMessage(), $expectExceptionMessage);
+            } else {
             throw $e;
+            }
         }
     }
 }

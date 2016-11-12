@@ -153,7 +153,7 @@ class PHP_ICO
         if (! is_array($this->_images) || empty($this->_images)) {
             throw new \BadMethodCallException(
                 'Cannot call ' .
-                static::class .
+                get_class($this) .
                 '::' .
                 __METHOD__ .
                 '() with no images!'
