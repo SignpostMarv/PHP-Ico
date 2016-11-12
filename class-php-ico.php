@@ -86,13 +86,7 @@ class PHP_ICO
      */
     public function add_image($file, $sizes = array())
     {
-        if (! $this->_has_requirements) {
-            return false;
-        }
-
-        if (false === ($im = $this->_load_image_file($file))) {
-            return false;
-        }
+        $im = $this->_load_image_file($file);
 
 
         if (empty($sizes)) {
@@ -134,21 +128,17 @@ class PHP_ICO
      */
     public function save_ico($file)
     {
-        if (! $this->_has_requirements) {
-            return false;
-        }
-
-        if (false === ($data = $this->_get_ico_data())) {
-            return false;
-        }
-
         if (false === ($fh = fopen($file, 'w'))) {
-            return false;
+            throw new \RuntimeException(
+                'Could not open file for writing!'
+            );
         }
 
-        if (false === (fwrite($fh, $data))) {
+        if (false === (fwrite($fh, $this->_get_ico_data()))) {
             fclose($fh);
-            return false;
+            throw new \RuntimeException(
+                'Could not write to opened file!'
+            );
         }
 
         fclose($fh);
@@ -162,7 +152,13 @@ class PHP_ICO
     private function _get_ico_data()
     {
         if (! is_array($this->_images) || empty($this->_images)) {
-            return false;
+            throw new \BadMethodCallException(
+                'Cannot call ' .
+                static::class .
+                '::' .
+                __METHOD__ .
+                '() with no images!'
+            );
         }
 
 
@@ -268,19 +264,27 @@ class PHP_ICO
     private function _load_image_file($file)
     {
         if (!is_string($file) || empty($file)) {
-            return false;
+            throw new \InvalidArgumentException(
+                'File not specified!'
+            );
         }
         // Run a cheap check to verify that it is an image file.
         if (false === ($size = getimagesize($file))) {
-            return false;
+            throw new \InvalidArgumentException(
+                'Could not determine image size!'
+            );
         }
 
         if (false === ($file_data = file_get_contents($file))) {
-            return false;
+            throw new \InvalidArgumentException(
+                'Could not open file!'
+            );
         }
 
         if (false === ($im = imagecreatefromstring($file_data))) {
-            return false;
+            throw new \InvalidArgumentException(
+                'Could not parse file!'
+            );
         }
 
         unset($file_data);
