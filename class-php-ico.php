@@ -21,7 +21,7 @@ class PHP_ICO
      *
      * @var boolean
      */
-    private $_has_requirements = false;
+    private static $_has_requirements = null;
 
 
     /**
@@ -35,6 +35,7 @@ class PHP_ICO
      */
     public function __construct($file = false, $sizes = array())
     {
+        if (is_null(self::$_has_requirements)) {
         $required_functions = array(
             'getimagesize',
             'imagecreatefromstring',
@@ -50,12 +51,20 @@ class PHP_ICO
 
         foreach ($required_functions as $function) {
             if (! function_exists($function)) {
-                trigger_error("The PHP_ICO class was unable to find the $function function, which is part of the GD library. Ensure that the system has the GD library installed and that PHP has access to it through a PHP interface, such as PHP's GD module. Since this function was not found, the library will be unable to create ICO files.");
+                self::$_has_requirements = false;
+                break;
                 return;
             }
         }
 
-        $this->_has_requirements = true;
+            if (is_null(self::$_has_requirements)) {
+        self::$_has_requirements = true;
+            }
+
+        }
+        if (self::$_has_requirements === false) {
+            throw new \RuntimeException("The PHP_ICO class was unable to find the $function function, which is part of the GD library. Ensure that the system has the GD library installed and that PHP has access to it through a PHP interface, such as PHP's GD module. Since this function was not found, the library will be unable to create ICO files.");
+        }
 
 
         if (false != $file) {
