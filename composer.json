@@ -22,7 +22,6 @@
     },
     "require": {
         "php": ">=5.4",
-        "ext-gd": "*",
         "intervention/image": "^2.3"
     },
     "autoload": {
