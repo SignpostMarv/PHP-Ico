@@ -1,5 +1,5 @@
 <?php
-declare (strict_types=1);
+declare(strict_types=1);
 
 namespace PHP_ICO\Tests;
 
@@ -15,7 +15,6 @@ use PHPUnit_Framework_TestCase;
  */
 class OutputIcoTest extends PHPUnit_Framework_TestCase
 {
-
     public function goodAddImageSingleProvider()
     {
         return array(
@@ -120,7 +119,8 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
     /**
     * @dataProvider goodAddImageSingleProvider
     */
-    public function testConstructorOnly($file, $sizes) {
+    public function testConstructorOnly($file, $sizes)
+    {
         $this->assertTrue(is_file($file));
         $this->assertTrue(is_readable($file));
         $this->assertTrue(is_file($file . '.ico'));
@@ -136,7 +136,8 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
     /**
     * @dataProvider badAddImageSingleProvider_invalidFile
     */
-    public function testAddImageBadFiles($file, $sizes, $expectException, $expectExceptionMessage) {
+    public function testAddImageBadFiles($file, $sizes, $expectException, $expectExceptionMessage)
+    {
         $ico = new PHP_ICO();
         $this->expectException($expectException);
         $this->expectExceptionMessage($expectExceptionMessage);
@@ -149,8 +150,7 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
     public function testSaveIcoBadData($arrayOfFilesAndSizes, $expectException, $expectExceptionMessage)
     {
         $ico = new PHP_ICO();
-        foreach ($arrayOfFilesAndSizes as $file => $sizes)
-        {
+        foreach ($arrayOfFilesAndSizes as $file => $sizes) {
             $ico->add_image($file, $sizes);
         }
         $outputToHere = tempnam(sys_get_temp_dir(), 'PHP_ICO_tests');
@@ -158,7 +158,7 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
         $this->expectException($expectException);
         $this->expectExceptionMessage($expectExceptionMessage);
         try {
-        $ico->save_ico($outputToHere);
+            $ico->save_ico($outputToHere);
         } catch (Exception $e) {
         }
         unlink($outputToHere);
