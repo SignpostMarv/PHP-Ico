@@ -3,6 +3,9 @@ declare (strict_types=1);
 
 namespace PHP_ICO\Tests;
 
+use BadMethodCallException;
+use Exception;
+use InvalidArgumentException;
 use PHP_ICO;
 use PHPUnit_Framework_TestCase;
 
@@ -67,35 +70,49 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
             array(
                 null,
                 array(),
+                InvalidArgumentException::class,
+                'File not specified!',
             ),
             array(
                 false,
                 array(),
+                InvalidArgumentException::class,
+                'File not specified!',
             ),
             array(
                 true,
                 array(),
+                InvalidArgumentException::class,
+                'File not specified!',
             ),
             array(
                 1,
                 array(),
+                InvalidArgumentException::class,
+                'File not specified!',
             ),
             array(
                 '',
                 array(),
+                InvalidArgumentException::class,
+                'File not specified!',
             ),
             array(
                 __DIR__ . DIRECTORY_SEPARATOR . 'test-ico-1.xcf',
                 array(),
+                InvalidArgumentException::class,
+                'Could not determine image size!',
             ),
         );
     }
 
-    public function badSaveIcoProvider_GetIcoDataReturnsFalse()
+    public function badSaveIcoProvider_MultipleSizes()
     {
         return array(
             array(
                 array(),
+                BadMethodCallException::class,
+                'Cannot call PHP_ICO::PHP_ICO::_get_ico_data() with no images!',
             ),
         );
     }
@@ -119,15 +136,17 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
     /**
     * @dataProvider badAddImageSingleProvider_invalidFile
     */
-    public function testAddImageBadFiles($file, $sizes) {
+    public function testAddImageBadFiles($file, $sizes, $expectException, $expectExceptionMessage) {
         $ico = new PHP_ICO();
-        $this->assertFalse($ico->add_image($file, $sizes));
+        $this->expectException($expectException);
+        $this->expectExceptionMessage($expectExceptionMessage);
+        $ico->add_image($file, $sizes);
     }
 
     /**
-    * @dataProvider badSaveIcoProvider_GetIcoDataReturnsFalse
+    * @dataProvider badSaveIcoProvider_MultipleSizes
     */
-    public function testSaveIcoBadData($arrayOfFilesAndSizes)
+    public function testSaveIcoBadData($arrayOfFilesAndSizes, $expectException, $expectExceptionMessage)
     {
         $ico = new PHP_ICO();
         foreach ($arrayOfFilesAndSizes as $file => $sizes)
@@ -135,7 +154,16 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
             $ico->add_image($file, $sizes);
         }
         $outputToHere = tempnam(sys_get_temp_dir(), 'PHP_ICO_tests');
-        $this->assertFalse($ico->save_ico($outputToHere));
+        $e = null;
+        $this->expectException($expectException);
+        $this->expectExceptionMessage($expectExceptionMessage);
+        try {
+        $ico->save_ico($outputToHere);
+        } catch (Exception $e) {
+        }
         unlink($outputToHere);
+        if ($e instanceof Exception) {
+            throw $e;
+        }
     }
 }
