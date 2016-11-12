@@ -21,8 +21,9 @@
         "source": "https://github.com/chrisbliss18/php-ico"
     },
     "require": {
-        "php": ">=5.2.4",
-        "ext-gd": "*"
+        "php": ">=5.4",
+        "ext-gd": "*",
+        "intervention/image": "^2.3"
     },
     "autoload": {
         "classmap": [
