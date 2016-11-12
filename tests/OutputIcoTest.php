@@ -8,6 +8,7 @@ use Exception;
 use InvalidArgumentException;
 use PHP_ICO;
 use PHPUnit_Framework_TestCase;
+use TypeError;
 
 /**
  * Class EasyDBTest
@@ -67,30 +68,6 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
     {
         return array(
             array(
-                null,
-                array(),
-                InvalidArgumentException::class,
-                'File not specified!',
-            ),
-            array(
-                false,
-                array(),
-                InvalidArgumentException::class,
-                'File not specified!',
-            ),
-            array(
-                true,
-                array(),
-                InvalidArgumentException::class,
-                'File not specified!',
-            ),
-            array(
-                1,
-                array(),
-                InvalidArgumentException::class,
-                'File not specified!',
-            ),
-            array(
                 '',
                 array(),
                 InvalidArgumentException::class,
@@ -101,6 +78,52 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
                 array(),
                 InvalidArgumentException::class,
                 'Could not determine image size!',
+            ),
+        );
+    }
+
+    public function badAddImageSingleProvider_invalidFileTypeError()
+    {
+        return array(
+            array(
+                null,
+                array(),
+            ),
+            array(
+                false,
+                array(),
+            ),
+            array(
+                true,
+                array(),
+            ),
+            array(
+                1,
+                array(),
+            ),
+            array(
+                1.2,
+                array(),
+            ),
+            array(
+                array(),
+                array()
+            ),
+            array(
+                '',
+                1,
+            ),
+            array(
+                '',
+                1.2,
+            ),
+            array(
+                '',
+                null,
+            ),
+            array(
+                '',
+                false,
             ),
         );
     }
@@ -141,6 +164,16 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
         $ico = new PHP_ICO();
         $this->expectException($expectException);
         $this->expectExceptionMessage($expectExceptionMessage);
+        $ico->add_image($file, $sizes);
+    }
+
+    /**
+    * @dataProvider badAddImageSingleProvider_invalidFileTypeError
+    */
+    public function testAddImageTypeError($file, $sizes)
+    {
+        $ico = new PHP_ICO();
+        $this->expectException(TypeError::class);
         $ico->add_image($file, $sizes);
     }
 

@@ -6,6 +6,7 @@ Licensed under GPLv2 or above
 
 Version 1.0.4
 */
+declare(strict_types=1);
 
 class PHP_ICO
 {
@@ -33,7 +34,7 @@ class PHP_ICO
      * @param string $file Optional. Path to the source image file.
      * @param array $sizes Optional. An array of sizes (each size is an array with a width and height) that the source image should be rendered at in the generated ICO file. If sizes are not supplied, the size of the source image will be used.
      */
-    public function __construct($file = false, $sizes = array())
+    public function __construct(string $file = null, array $sizes = array())
     {
         if (is_null(self::$_has_requirements)) {
             $required_functions = array(
@@ -66,7 +67,7 @@ class PHP_ICO
         }
 
 
-        if (false != $file) {
+        if (is_string($file)) {
             $this->add_image($file, $sizes);
         }
     }
@@ -83,7 +84,7 @@ class PHP_ICO
      * @param array $sizes Optional. An array of sizes (each size is an array with a width and height) that the source image should be rendered at in the generated ICO file. If sizes are not supplied, the size of the source image will be used.
      * @return boolean true on success and false on failure.
      */
-    public function add_image($file, $sizes = array())
+    public function add_image(string $file, array $sizes = array())
     {
         $im = $this->_load_image_file($file);
 
@@ -125,7 +126,7 @@ class PHP_ICO
      * @param string $file Path to save the ICO file data into.
      * @return boolean true on success and false on failure.
      */
-    public function save_ico($file)
+    public function save_ico(string $file) : bool
     {
         if (false === ($fh = fopen($file, 'w'))) {
             throw new \RuntimeException(
@@ -184,6 +185,7 @@ class PHP_ICO
 
     /**
      * Take a GD image resource and change it into a raw BMP format.
+     * @param resource $im
      */
     private function _add_image_data($im)
     {
@@ -260,7 +262,7 @@ class PHP_ICO
     /**
      * Read in the source image file and convert it into a GD image resource.
      */
-    private function _load_image_file($file)
+    private function _load_image_file(string $file)
     {
         if (!is_string($file) || empty($file)) {
             throw new \InvalidArgumentException(

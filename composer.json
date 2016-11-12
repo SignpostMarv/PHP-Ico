@@ -21,7 +21,7 @@
         "source": "https://github.com/chrisbliss18/php-ico"
     },
     "require": {
-        "php": ">=5.2.4",
+        "php": ">=7.0",
         "ext-gd": "*"
     },
     "autoload": {
