@@ -140,12 +140,11 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
     {
         $ico = new PHP_ICO();
         if (method_exists($this, 'expectException')) {
-        $this->expectException($expectException);
-        $this->expectExceptionMessage($expectExceptionMessage);
-        $ico->add_image($file, $sizes);
+            $this->expectException($expectException);
+            $this->expectExceptionMessage($expectExceptionMessage);
+            $ico->add_image($file, $sizes);
         } else {
             try {
-
             } catch (Exception $e) {
                 $this->assertSame(get_class($e), $expectException);
                 $this->assertSame($e->getMessage(), $expectExceptionMessage);
@@ -165,8 +164,8 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
         $outputToHere = tempnam(sys_get_temp_dir(), 'PHP_ICO_tests');
         $e = null;
         if (method_exists($this, 'expectException')) {
-        $this->expectException($expectException);
-        $this->expectExceptionMessage($expectExceptionMessage);
+            $this->expectException($expectException);
+            $this->expectExceptionMessage($expectExceptionMessage);
         }
         try {
             $ico->save_ico($outputToHere);
@@ -178,7 +177,7 @@ class OutputIcoTest extends PHPUnit_Framework_TestCase
                 $this->assertSame(get_class($e), $expectException);
                 $this->assertSame($e->getMessage(), $expectExceptionMessage);
             } else {
-            throw $e;
+                throw $e;
             }
         }
     }
